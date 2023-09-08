@@ -1,0 +1,24 @@
+---
+- name: Configurar banco de dados
+  hosts: db01
+
+  user: vagrant
+  become: yes
+
+  var_files:
+    - vars/main.yml
+  vars:
+    - dbname: "db01"
+    - dbusername: "root"
+    - dbpassword: "admin"
+
+  tasks:
+    - name: Configurar hosts
+      lineinfile: line "{{item}}" path=/etc/hosts
+      with_items:
+        - 192.168.1.111 control-node
+        - 192.168.1.110 app01
+        - 192.168.1.109 db01
+  roles:
+    - configuracao-default
+    - role: geerlingguy.mysql
